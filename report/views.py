@@ -36,19 +36,19 @@ def add_report(request, station_id, available_bikes, broken_bikes):
         return HttpResponse("Sorry, but it is absurd that %s bikes are broken out of %s at station #%s."
                                     % (broken_bikes, available_bikes, station_id))
 
-def see_last_report(request, stationId):##returns a dictionnary with data about the last report in a JSON format
-    if stationId in stations:
+def see_last_report(request, station_id):##returns a dictionnary with data about the last report in a JSON format
+    if station_id in stations:
         if len(Report.objects.filter(station_id=station_id).order_by('-report_date')) >= 1:
-            last_report = Report.objects.get(station_id=stationId).order_by('-report_date')[0]
+            last_report = Report.objects.get(station_id=station_id).order_by('-report_date')[0]
             if last_report.broken_bikes is None:
                 return HttpResponse("There is no report yet for this station.")
             else:
                 broken_bikes = last_report.broken_bikes
                 report_date = last_report.report_date
                 data = {
-                    'number':'broken_bikes',
-                    'date':'report_date',
-                    'id':'stationId'
+                    'number':'{}'.format(broken_bikes),
+                    'date':'{}'.format(report_date),
+                    'id':'{}'.format(station_id)
                 }
                 return HttpResponse(json.dumps(data))
         else:
