@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from report.models import Report
 from stationdict import stations
+from datetime import datetime
 import json
 
 
@@ -13,7 +14,7 @@ def index(request):
 
 
 def add_report(request, station_id, available_bikes, broken_bikes):
-    if available_bikes >= broken_bikes:
+    if int(available_bikes) >= int(broken_bikes):
         if station_id in stations:
             new_report = Report(report_date=timezone.now(),
                                 station_id=station_id,
@@ -47,7 +48,7 @@ def see_last_report(request, station_id):
             broken_bikes = last_report.broken_bikes
             available_bikes = last_report.available_bikes
             return_dict = {
-                            'report_date':'{}'.format(report_date),
+                            'report_date':'{}'.format(datetime.strftime(report_date, "%d\%m\%Y %X")),
                             'broken_bikes':'{}'.format(broken_bikes),
                             'available_bikes':'{}'.format(available_bikes),
                             'station_id':'{}'.format(station_id)
